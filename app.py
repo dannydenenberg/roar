@@ -1,38 +1,53 @@
-from flask import Flask, g
-import sqlite3
+import os
 
-app = Flask(__name__)
-
-def connect_db():
-    sql = sqlite3.connect('./database.db')
-    sql.row_factory = sqlite3.Row
-    return sql
+from flask import Flask
 
 
-def get_db():
-    #Check if DB is there
-    if not hasattr(g, 'sqlite3'):
-        g.sqlite3_db = connect_db()
-    return g.sqlite3_db
+def create_app(test_config=None):
+    """Create and configure an instance of the Flask application."""
+    app = Flask(__name__, instance_relative_config=True)
+    app.config.from_mapping(
+        # a default secret that should be overridden by instance config
+        SECRET_KEY="dev",
+        # store the database in the instance folder
+        DATABASE=os.path.join(app.instance_path, "password_manager.sqlite"),
+    )
 
-#close the connection to the database automatically
-@app.teardown_appcontext
-def close_db(error):
-    #if global object has a sqlite database then close it. If u leave it open noone can access it and gets lost in memory causing leaks.
-    if hasattr(g, 'sqlite_db'):
-        g.sqlite3_db.close()
+    if test_config is None:
+        # load the instance config, if it exists, when not testing
+        app.config.from_pyfile("config.py", silent=True)
+    else:
+        # load the test config if passed in
+        app.config.update(test_config)
 
-@app.route('/')
-def index():
-    return f'<h1>Hello, World!</h1>'
+    # ensure the instance folder exists
+    try:
+        os.makedirs(app.instance_path)
+    except OSError:
+        pass
 
-@app.route('/users')
-def viewusers():
-    db = get_db()
-    cursor = db.execute('select id, name, age from people')
-    results = cursor.fetchall()
-    return f"<h1>The Id is {results[0]['id']}.<br> The Name is {results[0]['name']}. <br> The age is {results[0]['age']}. </h1>"
+    @app.route("/hello")
+    def hello():
+        return "Hello, World!"
+
+    # register the database commands
+    import db
+
+    db.init_app(app)
+
+    # apply the blueprints to the app
+    import auth, blog
+
+    app.register_blueprint(auth.bp)
+    app.register_blueprint(blog.bp)
+
+    # make url_for('index') == url_for('blog.index')
+    # in another app, you might define a separate main index here with
+    # app.route, while giving the blog blueprint a url_prefix, but for
+    # the tutorial the blog will be the main index
+    app.add_url_rule("/", endpoint="index")
+
+    return app
 
 
-if __name__ == '__main__':
-    app.run(debug = True)
+create_app()
