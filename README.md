@@ -5,6 +5,8 @@ When adding to git, do NOT include `venv` and `__pycache__`. Run `pip freeze > r
 
 The `@click.command("init-db")` decorator makes a function call when you type: `flask init-db`. Do this to initialize the database for the first time (it wipes previous data).
 
+The `url_for("auth.login")` is for the "auth" blueprint and the `login` function.
+
 ### Running
 
 1. `cd` into the main directory.
@@ -12,3 +14,4 @@ The `@click.command("init-db")` decorator makes a function call when you type: `
 3. Install the dependencies with `pip install -r requirements.txt`.
 4. If you are running the program for the first time and don't have the database set up, run `flask init-db`.
 5. Run the program! `flask run`.
+6. (extra step>) If you want to run the application on the url `localhost`, do this: `flask run --host=0.0.0.0 --port=80`.
