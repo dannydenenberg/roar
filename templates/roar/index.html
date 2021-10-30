@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Roars{% endblock %}</h1>
+  {% if g.user %}
+    <a class="action" href="{{ url_for('roar.create') }}">New</a>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  {% for post in posts %}
+    <article class="post">
+      <header>
+        <div>
+          <!-- <h1>{{ post['title'] }}</h1> -->
+          <div class="about">by <strong>{{ post['username'] }}</strong> on {{ post['created'].strftime('%Y-%m-%d') }}. <i>{{ post['applauds'] }} likes</i></div>
+        </div>
+        {% if g.user['id'] == post['author_id'] %}
+          <a class="action" href="{{ url_for('roar.update', id=post['id']) }}">Edit</a>
+        {% endif %}
+      </header>
+      <p class="roar">{{ post['roar'] }}</p>
+      <!-- If it's not the current user, add an applaud button. -->
+      {% if g.user and g.user['id'] != post['author_id'] %}
+          {% if post['id'] in applauds %}
+            <span>(<a id="applaud" post_id="{{post['id']}}" class="action" href="#">UNapplaud</a>)</span>
+          {% else %}
+            <span>(<a id="applaud" post_id="{{post['id']}}" class="action" href="#">applaud</a>)</span>
+          {% endif %}
+      {% else %}
+        <span>(<a href="{{ url_for('auth.login') }}">applaud</a>)</span>
+      {% endif %}
+    </article>
+    {% if not loop.last %}
+      <hr>
+    {% endif %}
+  {% endfor %}
+
+
+  <script>
+    $(function() {
+      $('a#applaud').bind('click', function() {
+        let postID = parseInt($(this).attr('post_id')); // get post id of the clicked pos
+        let element = $(this);
+
+        $.getJSON($SCRIPT_ROOT + `/applaud`, { // $SCRIPT_ROOT is set in the base.html file.
+          post_id: postID
+        }, function(data) {
+          if (typeof data == "string") { // this means it returned HTML for the login page.
+            window.location.replace("/auth/login");
+          } else {
+            element.text("dunzo");
+          }
+        });
+        return false;
+      });
+    });
+  </script>
+{% endblock %}
+

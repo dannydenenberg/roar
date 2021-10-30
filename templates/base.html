@@ -1,4 +1,11 @@
 <!doctype html>
+<head>
+  <script src="{{ url_for('static', filename='jquery-3.6.0.min.js') }}"></script>
+  <script>
+    $SCRIPT_ROOT = {{ request.script_root | tojson }}; // get the root of the website from the clientk side
+    console.log(`hey22: ${$SCRIPT_ROOT}`)
+  </script>
+</head>
 <title>{% block title %}{% endblock %} - Roar</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 <nav>

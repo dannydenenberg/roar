@@ -7,6 +7,13 @@ The `@click.command("init-db")` decorator makes a function call when you type: `
 
 The `url_for("auth.login")` is for the "auth" blueprint and the `login` function.
 
+To read in the database and interact with it:
+- Run `sqlite3 database.sqlite`.
+- Run `.mode column` and `.headers on`
+- Then run your query: `select * from users;` etc..
+
+Make sure when running JavaScript inside of a .html file, it gets put inside a block. It won't get run otherwise.
+
 ### Running
 
 1. `cd` into the main directory.
