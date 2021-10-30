@@ -1,3 +1,11 @@
+p.roar {
+  border-style: double;
+    width: fit-content;
+}
+
+.post .about {
+  color: #858585;
+}
 /* html {
     font-family: sans-serif;
     background: #eee;

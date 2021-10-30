@@ -1,0 +1,9 @@
+{% block new_post_button %}
+    <button id="newbutton" class="action" data-linkto="{{ url_for('roar.create') }}">New</button>
+    <script>
+        $("#newbutton").click(function() {
+            let link = $(this).data('linkto');
+            window.location.href = link;
+        })
+    </script>
+{% endblock %}

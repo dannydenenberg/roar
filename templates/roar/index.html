@@ -3,38 +3,12 @@
 {% block header %}
   <h1>{% block title %}Roars{% endblock %}</h1>
   {% if g.user %}
-    <a class="action" href="{{ url_for('roar.create') }}">New</a>
+    {% include "partials/new_post_button.html" %}
   {% endif %}
 {% endblock %}
 
 {% block content %}
-  {% for post in posts %}
-    <article class="post">
-      <header>
-        <div>
-          <!-- <h1>{{ post['title'] }}</h1> -->
-          <div class="about">by <strong>{{ post['username'] }}</strong> on {{ post['created'].strftime('%Y-%m-%d') }}. <i>{{ post['applauds'] }} likes</i></div>
-        </div>
-        {% if g.user['id'] == post['author_id'] %}
-          <a class="action" href="{{ url_for('roar.update', id=post['id']) }}">Edit</a>
-        {% endif %}
-      </header>
-      <p class="roar">{{ post['roar'] }}</p>
-      <!-- If it's not the current user, add an applaud button. -->
-      {% if g.user and g.user['id'] != post['author_id'] %}
-          {% if post['id'] in applauds %}
-            <span>(<a id="applaud" post_id="{{post['id']}}" class="action" href="#">UNapplaud</a>)</span>
-          {% else %}
-            <span>(<a id="applaud" post_id="{{post['id']}}" class="action" href="#">applaud</a>)</span>
-          {% endif %}
-      {% else %}
-        <span>(<a href="{{ url_for('auth.login') }}">applaud</a>)</span>
-      {% endif %}
-    </article>
-    {% if not loop.last %}
-      <hr>
-    {% endif %}
-  {% endfor %}
+  {% include 'partials/post_list.html' %}
 
 
   <script>

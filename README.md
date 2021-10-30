@@ -22,3 +22,9 @@ Make sure when running JavaScript inside of a .html file, it gets put inside a b
 4. If you are running the program for the first time and don't have the database set up, run `flask init-db`.
 5. Run the program! `flask run`.
 6. (extra step>) If you want to run the application on the url `localhost`, do this: `flask run --host=0.0.0.0 --port=80`.
+
+
+### Todo
+- [ ] user page that shows all their roars.
+- [ ] all your liked roars
+- [ ] password page that stores your key/value username/passcode pairs.

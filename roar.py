@@ -24,7 +24,7 @@ def index():
             roar, 
             p.created, 
             author_id, 
-            (select count(*) from applaud a WHERE a.post_id = p.id) applauds, 
+            (select count(*) from applaud a WHERE a.post_id = p.id) applauds,
             username
         from post p join user u on p.author_id = u.id
         order by p.created desc;
@@ -45,6 +45,30 @@ def index():
     return render_template("roar/index.html", posts=posts, applauds=applauds)
 
 
+@bp.route("/myspace")
+@login_required
+def myspace():
+    """Show all of the logged in user's posts."""
+    db = get_db()
+    user_id = g.user["id"]
+    posts = db.execute(
+        """
+        select 
+            p.id, 
+            roar, 
+            p.created, 
+            author_id, 
+            (select count(*) from applaud a WHERE a.post_id = p.id) applauds,
+            username
+        from post p join user u on p.author_id = u.id
+        where author_id = ?
+        order by p.created desc;
+        """,
+    (user_id,)).fetchall()
+
+    return render_template("roar/myspace.html", posts=posts)
+
+
 def get_post(id, check_author=True):
     """Get a post and its author by id.
     Checks that the id exists and optionally that the current user is
@@ -58,7 +82,7 @@ def get_post(id, check_author=True):
     post = (
         get_db()
         .execute(
-            "SELECT p.id, roar, created, author_id, username"
+            "SELECT p.id, roar, p.created, author_id, username"
             " FROM post p JOIN user u ON p.author_id = u.id"
             " WHERE p.id = ?",
             (id,),
@@ -110,7 +134,7 @@ def update(id):
         roar = request.form["roar"]
         error = None
 
-        if not title:
+        if not roar:
             error = "Put some SOUND in your ROAR."
 
         if error is not None:
