@@ -25,6 +25,6 @@ Make sure when running JavaScript inside of a .html file, it gets put inside a b
 
 
 ### Todo
-- [ ] user page that shows all their roars.
+- [x] user page that shows all their roars.
 - [ ] all your liked roars
 - [ ] password page that stores your key/value username/passcode pairs.
