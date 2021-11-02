@@ -4,6 +4,11 @@ html, body {
   width: 100%
 }
 
+#applaud {
+  text-decoration: none;
+  color: rgba(255, 0, 0, 0.66);
+}
+
 .show-account-nav li {
   display: inline;
 }

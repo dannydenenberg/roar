@@ -28,5 +28,6 @@ Make sure when running JavaScript inside of a .html file, it gets put inside a b
 - [x] user page that shows all their roars.
 - [x] page that shows any user's roars
 - [ ] add description to a user's account
+- [x] add heart icon to applaud roars
 - [x] all your liked roars
 - [ ] password page that stores your key/value username/passcode pairs.

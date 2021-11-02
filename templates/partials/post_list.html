@@ -15,9 +15,11 @@
         <!-- If it's not the current user, add an applaud button. -->
         {% if g.user and g.user['id'] != post['author_id'] %}
             {% if post['id'] in applauds %}
-              <span>(<a id="applaud" post_id="{{post['id']}}" class="action" href="#">UNapplaud</a>)</span>
+              <!-- UNapplaud -->
+              <span>(<a id="applaud" description="unapplaud" post_id="{{post['id']}}" class="action" href="#">♥</a>)</span>
             {% else %}
-              <span>(<a id="applaud" post_id="{{post['id']}}" class="action" href="#">applaud</a>)</span>
+              <!-- applaud -->
+              <span>(<a id="applaud" description="applaud" post_id="{{post['id']}}" class="action" href="#">♡</a>)</span>
             {% endif %}
         {% elif not g.user %}
           <span id="span-applaud">(<a id="applaud-login" href="{{ url_for('auth.login') }}">applaud</a>)</span>
@@ -34,6 +36,7 @@
   $(function() {
     $('a#applaud').bind('click', function() {
       let postID = parseInt($(this).attr('post_id')); // get post id of the clicked pos
+      let description = $(this).attr('description');
       let element = $(this);
 
       $.getJSON($SCRIPT_ROOT + `/applaud`, { // $SCRIPT_ROOT is set in the base.html file.
@@ -42,7 +45,17 @@
         if (typeof data == "string") { // this means it returned HTML for the login page.
           window.location.replace("/auth/login");
         } else {
-          element.text("dunzo");
+          let newText = ""
+          
+          if (description == "applaud") {
+            newText = "♥"
+            element.attr('description', 'unapplaud')
+          } else {
+            newText = "♡"
+            element.attr('description', 'applaud')
+          }
+
+          element.text(newText);
         }
       });
       return false;
