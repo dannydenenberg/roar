@@ -225,7 +225,7 @@ def show_account(username):
         """,
     (username,)).fetchall()
 
-    if len(posts) == 0:
+    if posts is None:
         return abort(404)
 
     return render_template("roar/show_account/base.html", username=username, posts=posts)
