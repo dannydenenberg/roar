@@ -7,6 +7,8 @@ from flask import request
 from flask import url_for
 from werkzeug.exceptions import abort
 
+import random
+
 from auth import login_required
 from db import get_db
 
@@ -39,34 +41,8 @@ def index():
                     ).fetchall()
         [applauds.append(a["post_id"]) for a in applauds_list] # make a list of only the ID numbers.
 
-        print(applauds)
-
 
     return render_template("roar/index.html", posts=posts, applauds=applauds)
-
-
-@bp.route("/myspace")
-@login_required
-def myspace():
-    """Show all of the logged in user's posts."""
-    db = get_db()
-    user_id = g.user["id"]
-    posts = db.execute(
-        """
-        select 
-            p.id, 
-            roar, 
-            p.created, 
-            author_id, 
-            (select count(*) from applaud a WHERE a.post_id = p.id) applauds,
-            username
-        from post p join user u on p.author_id = u.id
-        where author_id = ?
-        order by p.created desc;
-        """,
-    (user_id,)).fetchall()
-
-    return render_template("roar/myspace.html", posts=posts)
 
 
 def get_post(id, check_author=True):
@@ -192,3 +168,70 @@ def applaud():
     
 
     return {}
+
+@bp.route("/~<string:username>/applauds", methods=("GET", "POST"))
+def show_account_applauds(username):
+    """Show all the tweets from a username."""
+    db = get_db()
+    posts = db.execute(
+        """
+        select 
+            p.id, 
+            roar,
+            p.created, 
+            author_id, 
+            (select count(*) from applaud a WHERE a.post_id = p.id) applauds,
+            username
+        from 
+            applaud a 
+        join post p on p.id = a.post_id 
+        join user u on u.id = a.user_id 
+        where username = ?;
+        """,
+    (username,)).fetchall()
+
+    if len(posts) == 0:
+        print('no liked posts')
+        # return abort(404)
+
+    applauds = [] # dic with {post_number: True/False} whether the post has been liked by the person.
+    if g.user is not None: # if the person is signed in.
+        applauds_list = db.execute(
+                        "SELECT post_id FROM applaud WHERE user_id = ?",
+                        (g.user["id"],),
+                    ).fetchall()
+        [applauds.append(a["post_id"]) for a in applauds_list] # make a list of only the ID numbers.
+
+
+    return render_template("roar/show_account/base.html", applauds=applauds, username=username, posts=posts)
+
+
+@bp.route("/~<string:username>", methods=("GET", "POST"))
+def show_account(username):
+    """Show all the tweets from a username."""
+    db = get_db()
+    posts = db.execute(
+        """
+        select 
+            p.id, 
+            roar, 
+            p.created, 
+            author_id, 
+            (select count(*) from applaud a WHERE a.post_id = p.id) applauds,
+            username
+        from post p join user u on p.author_id = u.id
+        where username = ?
+        order by p.created desc;
+        """,
+    (username,)).fetchall()
+
+    if len(posts) == 0:
+        return abort(404)
+
+    return render_template("roar/show_account/base.html", username=username, posts=posts)
+
+
+@bp.errorhandler(404)
+def page_not_found(e):
+    # note that we set the 404 status explicitly
+    return "<h1>404</h1><p>Chap, you made a mistake typing that URL. Here's a link <a href='/'>home</a>.</p>", 404

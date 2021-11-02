@@ -1,10 +1,98 @@
+html, body {
+  height: 100%;
+  position: relative;
+  width: 100%
+}
+
+.show-account-nav li {
+  display: inline;
+}
+
+.show-account-nav li:not(:last-child)::after {
+  content: " or ";
+}
+
+.post-list-username {
+  text-decoration: none;
+  color: inherit;
+}
+
+.post-list-username:hover {
+  text-decoration: underline;
+  color: black;
+}
+
+.content {
+  padding: 1.5em;
+}
+
 p.roar {
-  border-style: double;
+  /* border-style: double; */
     width: fit-content;
 }
 
 .post .about {
   color: #858585;
+}
+
+.search .global-header {
+  position: fixed;
+}
+.search .global-header {
+  position: static;
+}
+
+.global-header {
+  *zoom: 1;
+  border-bottom: 1px #ccc solid;
+  background: #eee;
+  /* height: 100%; */
+  line-height: 1em;
+  min-height: 1.1em;
+  padding: 0.6em 0;
+  width: 100%;
+  z-index: 1003;
+}
+
+.global-header ul {
+  padding-right: 1em;
+  float: right;
+  font-size: .9em;
+  margin-top: 2px;
+  position: absolute;
+  right: 0;
+}
+
+.header-logo {
+  -webkit-border-radius: 1em;
+  -moz-border-radius: 1em;
+  border-radius: 1em;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  float: left;
+  line-height: 1;
+  margin: 0 5px;
+  padding: 0.25em;
+  text-decoration: none;
+}
+
+.global-header ul li {
+  display: inline;
+}
+
+.global-header ul li:not(:last-child)::after {
+  content: " | ";
+}
+
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  /* border: 0; */
+  /* font-size: 100%; */
+  /* font: inherit; */
+  vertical-align: baseline;
+  font-family: sans-serif;
 }
 /* html {
     font-family: sans-serif;

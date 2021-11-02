@@ -4,22 +4,25 @@
   <script>
     $SCRIPT_ROOT = {{ request.script_root | tojson }}; // get the root of the website from the clientk side
   </script>
+  <title>{% block title %}{% endblock %} - Roar</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<title>{% block title %}{% endblock %} - Roar</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-<nav>
-  <h1><a href="{{ url_for('index') }}">Roar</a></h1>
-  <ul>
-    {% if g.user %}
-      <li><span>{{ g.user['username'] }}</span>
-      <li><a href="{{ url_for('roar.myspace') }}">myspace</a>
-      <li><a href="{{ url_for('auth.logout') }}">Log Out</a>
-    {% else %}
-      <li><a href="{{ url_for('auth.register') }}">Register</a>
-      <li><a href="{{ url_for('auth.login') }}">Log In</a>
-    {% endif %}
-  </ul>
-</nav>
+<body>
+<header class="global-header">
+  <nav>
+    <a class="header-logo" href="{{ url_for('index') }}">Roar</a>
+    <ul>
+      {% if g.user %}
+        <li> {% include "partials/new_post_button.html" %}
+        <li><a href="{{ url_for('roar.show_account', username=g.user['username']) }}"><span>account</span></a>
+        <li><a href="{{ url_for('auth.logout') }}">log out</a>
+      {% else %}
+        <li><a href="{{ url_for('auth.register') }}">Register</a>
+        <li><a href="{{ url_for('auth.login') }}">log in</a>
+      {% endif %}
+    </ul>
+  </nav>
+</header>
 <section class="content">
   <header>
     {% block header %}{% endblock %}

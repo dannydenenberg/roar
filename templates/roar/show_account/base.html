@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>~{{ username }}</h1>
+  <p>description</p>
+  <ul class="show-account-nav">
+    <li><a href="{{ url_for('roar.show_account', username=username) }}">show posts</a></li>
+    <li><a href="{{ url_for('roar.show_account_applauds', username=username)}}">applauds given</a></li>
+  </ul>
+  <br>
+{% endblock %}
+
+{% block content %}
+    {% include 'partials/post_list.html' %}
+{% endblock %}
